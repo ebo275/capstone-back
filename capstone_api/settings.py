@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url # add this
+import os # add this
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # edit this var
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +29,7 @@ SECRET_KEY = 'django-insecure-0re&==0bzw_=)j7edpp#aww1pcgabs_@g582n8y1$mwdydw!b_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'capstone-be.herokuapp.com']
 
 
 # Application definition
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # add this
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOW_ALL_ORIGINS = True # add this
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # add this
 
 ROOT_URLCONF = 'capstone_api.urls'
 
@@ -87,7 +93,8 @@ DATABASES = {
         'HOST': 'localhost'
     }
 }
-
+db_from_env = dj_database_url.config(conn_max_age=600) # add this
+DATABASES['default'].update(db_from_env) # add this
 
 
 # Password validation
@@ -124,7 +131,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # add this
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
